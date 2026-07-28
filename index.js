@@ -1,5 +1,6 @@
 import { Client, GuildMember, GatewayIntentBits } from "discord.js";
-import { Player, QueryType } from "discord-player";
+import { Player, QueryType, createErisCompat } from "discord-player";
+import { YoutubeiExtractor } from "discord-player-youtubei"
 import config from "./config.json" with { type: "json" };
 
 const client = new Client({
@@ -15,36 +16,39 @@ client.once('ready', () => {
  console.log('Ready!');
 });
 
-const player = new Player(client);
+const player = new Player(createErisCompat(client));
 
-player.on("error", (queue, error) => {
+await player.extractors.loadMulti(YoutubeiExtractor);
+
+
+player.events.on("error", (queue, error) => {
     console.log(`[${queue.guild.name}] Error emitted from the queue: ${error.message}`);
 });
-player.on("connectionError", (queue, error) => {
+player.events.on("connectionError", (queue, error) => {
     console.log(`[${queue.guild.name}] Error emitted from the connection: ${error.message}`);
 });
 
-player.on("trackStart", (queue, track) => {
+player.events.on("playerStart", (queue, track) => {
     queue.metadata.send(`Bicho, agora vai tocar: **${track.title}**!`);
 });
 
-player.on("trackAdd", (queue, track) => {
+player.events.on("audioTrackAdd", (queue, track) => {
     queue.metadata.send(`Caralho, **${track.title}** ? Aí sim ein!`);
 });
 
-player.on("trackRemove", (queue, track) => {
+player.events.on("audioTrackRemove", (queue, track) => {
     queue.metadata.send(`Paia, mas beleza, **${track.title}** foi removida da fila.`);
 });
 
-player.on("botDisconnect", (queue) => {
+player.events.on("botDisconnect", (queue) => {
     queue.metadata.send("Pô, aí você me alopra, me desconectou do canal de voz.");
 });
 
-player.on("channelEmpty", (queue) => {
+player.events.on("channelEmpty", (queue) => {
     queue.metadata.send("Rapaziada, não tem mais ninguém no canal de voz. Saindo");
 });
 
-player.on("queueEnd", (queue) => {
+player.events.on("queueEnd", (queue) => {
     queue.metadata.send("A fila acabou man, se quiser me chamar de novo... é só chamar ksksksksks.");
 });
 
@@ -55,7 +59,6 @@ client.on("messageCreate", async (message) => {
 
 client.on("messageCreate", async (message) => {
         
-
         if (message.content === "!deploy" && message.author.id === client.application?.owner?.id) {
         await message.guild.commands.set([
             {
