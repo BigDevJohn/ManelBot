@@ -43,15 +43,15 @@ player.events.on("audioTrackRemove", (queue, track) => {
     queue.metadata.send(`Paia, mas beleza, **${track.title}** foi removida da fila.`);
 });
 
-player.events.on("botDisconnect", (queue) => {
+player.events.on("disconnect", (queue) => {
     queue.metadata.send("Pô, aí você me alopra, me desconectou do canal de voz.");
 });
 
-player.events.on("channelEmpty", (queue) => {
+player.events.on("emptyChannel", (queue) => {
     queue.metadata.send("Rapaziada, não tem mais ninguém no canal de voz. Saindo");
 });
 
-player.events.on("queueEnd", (queue) => {
+player.events.on("emptyQueue", (queue) => {
     queue.metadata.send("A fila acabou man, se quiser me chamar de novo... é só chamar ksksksksks.");
 });
 

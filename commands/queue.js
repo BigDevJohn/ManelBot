@@ -23,11 +23,11 @@ export async function execute(interaction) {
  
   // Create a message with the current track and upcoming tracks
   const message = [
-    `**Now Playing:** ${currentTrack.title} - ${currentTrack.author}`,
+    `**Tocando agora:** ${currentTrack.title}`,
     '',
-    '**Upcoming Tracks:**',
+    '**Próximas Músicas:**',
     ...upcomingTracks.map(
-      (track, index) => `${index + 1}. ${track.title} - ${track.author}`,
+      (track, index) => `${index + 1}. ${track.title}`,
     ),
   ].join('\n');
  
