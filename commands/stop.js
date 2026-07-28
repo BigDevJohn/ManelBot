@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from 'discord.js';
-const { useQueue } = require("discord-player");
+import { useQueue } from 'discord-player';
 
 export const command = new SlashCommandBuilder()
     .setName('stop') // Command name

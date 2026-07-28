@@ -4,9 +4,11 @@ import * as skip from './skip.js';
 import * as stop from './stop.js';
 import * as queue from './queue.js';
 import * as remove from './remove.js';
+import * as nowPlaying from './now-playing.js';
+import * as loop from './loop.js';
 
 // Adicione aqui os outros comandos (skip, stop, queue, remove) quando existirem
-const commandModules = [play, skip, stop, queue, remove];
+const commandModules = [play, skip, stop, queue, remove, nowPlaying, loop];
 
 export const commands = new Collection(
   commandModules.map((mod) => [mod.command.name, mod]),
