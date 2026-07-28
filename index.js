@@ -1,7 +1,9 @@
 import { Client, GuildMember, GatewayIntentBits } from "discord.js";
 import { Player, QueryType, createErisCompat } from "discord-player";
 import { YoutubeiExtractor } from "discord-player-youtubei"
-import config from "./config.json" with { type: "json" };
+require('dotenv').config();
+
+const token = process.env.DISCORD_TOKEN;
 
 const client = new Client({
     intents: [
@@ -10,7 +12,7 @@ const client = new Client({
         GatewayIntentBits.Guilds
     ]
 });
-client.login(config.token);
+client.login(token);
 
 client.once('ready', () => {
  console.log('Ready!');
