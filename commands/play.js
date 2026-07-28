@@ -2,7 +2,6 @@
 import { SlashCommandBuilder, PermissionsBitField } from 'discord.js';
 import { useMainPlayer } from 'discord-player';
 
- 
 // Define the play command
 export const command = new SlashCommandBuilder()
   .setName('play') // Command name
@@ -14,59 +13,54 @@ export const command = new SlashCommandBuilder()
         .setDescription('Musica para tocar') // Option description
         .setRequired(true), // Make the option required
   );
- 
-// Define the execute function for the play command
-export async function execute(interaction) {
-  // Get the player instance
-  const player = useMainPlayer();
-  // Get the song query from the user input
-  const query = interaction.options.getString('song', true);
-}
- 
+
 // Define the execute function for the play command
 export async function execute(interaction) {
   // Get the player instance and song query
   const player = useMainPlayer();
   const query = interaction.options.getString('song', true);
- 
+
   // Get the voice channel of the user and check permissions
   const voiceChannel = interaction.member.voice.channel;
- 
+
   if (!voiceChannel) {
     return interaction.reply(
-      'You need to be in a voice channel to play music!',
+      'Você precisar estar em um canal de voz né macho!',
     );
   }
- 
+
   if (
     interaction.guild.members.me.voice.channel &&
     interaction.guild.members.me.voice.channel !== voiceChannel
   ) {
     return interaction.reply(
-      'I am already playing in a different voice channel!',
+      'Já tô tocando em outro canal mano!',
     );
   }
- 
+
   if (
     !voiceChannel
       .permissionsFor(interaction.guild.members.me)
       .has(PermissionsBitField.Flags.Connect)
   ) {
     return interaction.reply(
-      'I do not have permission to join your voice channel!',
+      'Rapaz, tenho permissão pra fazer isso não.',
     );
   }
- 
+
   if (
     !voiceChannel
       .permissionsFor(interaction.guild.members.me)
       .has(PermissionsBitField.Flags.Speak)
   ) {
     return interaction.reply(
-      'I do not have permission to speak in your voice channel!',
+      'Não tenho permissão pra falar nesse canal!',
     );
   }
- 
+
+  // player.play pode demorar (busca/stream), então adia a resposta
+  await interaction.deferReply();
+
   try {
     // Play the song in the voice channel
     const result = await player.play(voiceChannel, query, {
@@ -74,14 +68,14 @@ export async function execute(interaction) {
         metadata: { channel: interaction.channel }, // Store text channel as metadata on the queue
       },
     });
- 
+
     // Reply to the user that the song has been added to the queue
-    return interaction.reply(
+    return interaction.editReply(
       `${result.track.title} has been added to the queue!`,
     );
   } catch (error) {
     // Handle any errors that occur
     console.error(error);
-    return interaction.reply('An error occurred while playing the song!');
+    return interaction.editReply('An error occurred while playing the song!');
   }
 }

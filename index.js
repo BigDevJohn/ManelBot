@@ -1,7 +1,8 @@
-import { Client, GuildMember, GatewayIntentBits } from "discord.js";
-import { Player, QueryType, createErisCompat } from "discord-player";
-import { YoutubeiExtractor } from "discord-player-youtubei"
-require('dotenv').config();
+import { Client, GatewayIntentBits, ApplicationCommandOptionType } from "discord.js";
+import { Player } from "discord-player";
+import { YoutubeiExtractor } from "discord-player-youtubei";
+import { handleInteraction } from "./command-handler.js";
+import 'dotenv/config';
 
 const token = process.env.DISCORD_TOKEN;
 
@@ -18,7 +19,7 @@ client.once('ready', () => {
  console.log('Ready!');
 });
 
-const player = new Player(createErisCompat(client));
+const player = new Player(client);
 
 await player.extractors.loadMulti(YoutubeiExtractor);
 
@@ -60,7 +61,7 @@ client.on("messageCreate", async (message) => {
 });
 
 client.on("messageCreate", async (message) => {
-        
+
         if (message.content === "!deploy" && message.author.id === client.application?.owner?.id) {
         await message.guild.commands.set([
             {
@@ -68,8 +69,8 @@ client.on("messageCreate", async (message) => {
                 description: "Plays a song from youtube",
                 options: [
                     {
-                        name: "query",
-                        type: "STRING",
+                        name: "song",
+                        type: ApplicationCommandOptionType.String,
                         description: "The song you want to play",
                         required: true
                     }
@@ -96,3 +97,6 @@ client.on("messageCreate", async (message) => {
         await message.reply("Deployed!");
     }
 });
+
+// Sem isso, nenhum slash command é executado quando o usuário chama /play
+client.on("interactionCreate", handleInteraction);
