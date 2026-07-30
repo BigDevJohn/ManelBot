@@ -1,5 +1,5 @@
 import { useMainPlayer } from 'discord-player';
-import { commands } from './commands/index.js';
+import { commands } from './commands/main.js';
 
 export async function handleInteraction(interaction) {
   if (!interaction.isChatInputCommand()) return;

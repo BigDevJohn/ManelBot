@@ -1,0 +1,9 @@
+export const notInVoiceChannel = "Você precisar estar em um canal de voz né macho!";
+export const alreadyInVoiceChannel = "Já tô tocando em outro canal mano!";
+export const noPermission = "Rapaz, tenho permissão pra fazer isso não.";
+export const noChannelPermission = "Não tenho permissão pra falar nesse canal!";
+export const errorPlayingSong = "Ocorreu um erro ao tentar tocar a música!";
+export const noQueue = "Este servidor não tem uma sessão de player ativa.";
+export const noCurrentTrack = "Não há nenhuma música tocando no momento.";
+export const stoppingTrackError = "Ocorreu um erro ao tentar parar a música.";
+export const needToBeInSameVoiceChannel = "Você precisa estar no mesmo canal de voz que o bot.";

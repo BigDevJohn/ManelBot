@@ -1,27 +1,29 @@
 import { SlashCommandBuilder } from 'discord.js';
 import { useQueue } from 'discord-player';
- 
+import { noQueue, noCurrentTrack } from '../bot-responses/errors.js';
+import { skipResponse } from '../bot-responses/actions.js';
+
 export const command = new SlashCommandBuilder()
   .setName('skip') // Command name
-  .setDescription('Skip the currently playing song'); // Command description
- 
+  .setDescription('Pula para a próxima música'); // Command description
+
 export async function execute(interaction) {
   // Get the current queue
   const queue = useQueue();
- 
+
   if (!queue) {
     return interaction.reply(
-      'This server does not have an active player session.',
+      noQueue,
     );
   }
- 
+
   if (!queue.isPlaying()) {
-    return interaction.reply('There is no track playing.');
+    return interaction.reply(noCurrentTrack);
   }
- 
+
   // Skip the current track
   queue.node.skip();
- 
+
   // Send a confirmation message
-  return interaction.reply('The current song has been skipped.');
+  return interaction.reply(skipResponse);
 }

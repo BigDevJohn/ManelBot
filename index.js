@@ -1,7 +1,9 @@
 import { Client, GatewayIntentBits, ApplicationCommandOptionType } from "discord.js";
 import { Player } from "discord-player";
-import { YoutubeiExtractor } from "discord-player-youtubei";
+import pkg from "@discord-player/extractor";
+const { DefaultExtractors } = pkg;
 import { handleInteraction } from "./command-handler.js";
+import { commands } from './commands/main.js';
 import 'dotenv/config';
 
 const token = process.env.DISCORD_TOKEN;
@@ -10,20 +12,21 @@ const client = new Client({
     intents: [
         GatewayIntentBits.GuildVoiceStates,
         GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.Guilds
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.MessageContent
+
     ]
 });
 client.login(token);
 
-client.once('ready', () => {
- console.log('Ready!');
+client.once('clientReady', async () => {
+    await client.application?.fetch();
+    console.log('Ready!');
 });
 
 const player = new Player(client);
 
-await player.extractors.loadMulti(YoutubeiExtractor);
-
-
+await player.extractors.loadMulti(DefaultExtractors);
 player.events.on("error", (queue, error) => {
     console.log(`[${queue.guild.name}] Error emitted from the queue: ${error.message}`);
 });
@@ -56,45 +59,25 @@ player.events.on("emptyQueue", (queue) => {
 });
 
 client.on("messageCreate", async (message) => {
-        if (message.author.bot || !message.guild) return;
-    if (!client.application?.owner) await client.application?.fetch();
-});
+    if (message.author.bot || !message.guild) return;
 
-client.on("messageCreate", async (message) => {
+    if (message.author.id === client.application?.owner?.id) {
+        if (message.content === "!test") {
+            const commandsData = commands.map((mod) => mod.command.toJSON());
 
-        if (message.content === "!deploy" && message.author.id === client.application?.owner?.id) {
-        await message.guild.commands.set([
-            {
-                name: "play",
-                description: "Plays a song from youtube",
-                options: [
-                    {
-                        name: "song",
-                        type: ApplicationCommandOptionType.String,
-                        description: "The song you want to play",
-                        required: true
-                    }
-                ]
-            },
-            {
-                name: "remove",
-                description: "Remove a song from the queue",
-            },
-            {
-                name: "skip",
-                description: "Skip to the current song"
-            },
-            {
-                name: "queue",
-                description: "See the queue"
-            },
-            {
-                name: "stop",
-                description: "Stop the player"
-            },
-        ]);
+            await message.guild.commands.set(commandsData);
 
-        await message.reply("Deployed!");
+            await message.reply("Test Deployed!");
+        }else if (message.content === "!deploy") {
+            const commandsData = commands.map((mod) => mod.command.toJSON());
+            
+            await client.application.commands.set(commandsData);
+
+            await message.reply("Commands Deployed!");
+
+
+        }
+
     }
 });
 

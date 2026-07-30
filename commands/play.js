@@ -1,6 +1,7 @@
 // Import necessary classes from discord.js
 import { SlashCommandBuilder, PermissionsBitField } from 'discord.js';
 import { useMainPlayer } from 'discord-player';
+import { notInVoiceChannel, alreadyInVoiceChannel, noPermission, noChannelPermission } from '../bot-responses/errors.js';
 
 // Define the play command
 export const command = new SlashCommandBuilder()
@@ -25,7 +26,7 @@ export async function execute(interaction) {
 
   if (!voiceChannel) {
     return interaction.reply(
-      'Você precisar estar em um canal de voz né macho!',
+      notInVoiceChannel,
     );
   }
 
@@ -34,7 +35,7 @@ export async function execute(interaction) {
     interaction.guild.members.me.voice.channel !== voiceChannel
   ) {
     return interaction.reply(
-      'Já tô tocando em outro canal mano!',
+      alreadyInVoiceChannel,
     );
   }
 
@@ -44,7 +45,7 @@ export async function execute(interaction) {
       .has(PermissionsBitField.Flags.Connect)
   ) {
     return interaction.reply(
-      'Rapaz, tenho permissão pra fazer isso não.',
+      noPermission,
     );
   }
 
@@ -54,7 +55,7 @@ export async function execute(interaction) {
       .has(PermissionsBitField.Flags.Speak)
   ) {
     return interaction.reply(
-      'Não tenho permissão pra falar nesse canal!',
+      noChannelPermission,
     );
   }
 
@@ -65,17 +66,17 @@ export async function execute(interaction) {
     // Play the song in the voice channel
     const result = await player.play(voiceChannel, query, {
       nodeOptions: {
-        metadata: { channel: interaction.channel }, // Store text channel as metadata on the queue
+        metadata:  interaction.channel, // Store text channel as metadata on the queue
       },
     });
 
     // Reply to the user that the song has been added to the queue
     return interaction.editReply(
-      `${result.track.title} has been added to the queue!`,
+      `${result.track.title} foi adicionada à fila!`,
     );
   } catch (error) {
     // Handle any errors that occur
     console.error(error);
-    return interaction.editReply('An error occurred while playing the song!');
+    return interaction.editReply(errorPlayingSong);
   }
 }

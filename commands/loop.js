@@ -1,9 +1,10 @@
 import { SlashCommandBuilder } from 'discord.js';
 import { QueueRepeatMode, useQueue } from 'discord-player';
- 
+import { noQueue } from '../bot-responses/errors.js';
+
 export const command = new SlashCommandBuilder()
   .setName('loop') // Command name
-  .setDescription('Loop the queue in different modes') // Command description
+  .setDescription('Escolha um modo de loop') // Command description
   .addNumberOption((option) =>
     option
       .setName('mode') // Option name
@@ -11,15 +12,15 @@ export const command = new SlashCommandBuilder()
       .setRequired(true) // Option is required
       .addChoices(
         {
-          name: 'Off',
+          name: 'Desligado',
           value: QueueRepeatMode.OFF,
         },
         {
-          name: 'Track',
+          name: 'Musica',
           value: QueueRepeatMode.TRACK,
         },
         {
-          name: 'Queue',
+          name: 'Fila',
           value: QueueRepeatMode.QUEUE,
         },
         {
@@ -28,23 +29,30 @@ export const command = new SlashCommandBuilder()
         },
       ),
   );
- 
+
+const loopModes = {
+  0: 'Desligado',
+  1: 'Musica',
+  2: 'Fila',
+  3: 'Autoplay',
+}
+
 export async function execute(interaction) {
   // Get the current queue
   const queue = useQueue();
- 
+
   if (!queue) {
     return interaction.reply(
-      'This server does not have an active player session.',
+      noQueue,
     );
   }
- 
+
   // Get the loop mode
   const loopMode = interaction.options.getNumber('mode');
- 
+
   // Set the loop mode
   queue.setRepeatMode(loopMode);
- 
+
   // Send a confirmation message
-  return interaction.reply(`Loop mode set to ${QueueRepeatMode[loopMode]}`);
+  return interaction.reply(`Modo de Loop definido para ${loopModes[loopMode]}`);
 }

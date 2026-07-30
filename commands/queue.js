@@ -1,9 +1,10 @@
 import { SlashCommandBuilder } from 'discord.js';
 import { useQueue } from 'discord-player';
+import { noQueue } from '../bot-responses/errors.js';
  
 export const command = new SlashCommandBuilder()
   .setName('queue') // Command name
-  .setDescription('Display the current queue'); // Command description
+  .setDescription('Exibe a fila de músicas'); // Command description
  
 export async function execute(interaction) {
   // Get the current queue
@@ -11,25 +12,24 @@ export async function execute(interaction) {
  
   if (!queue) {
     return interaction.reply(
-      'This server does not have an active player session.',
+      noQueue,
     );
   }
  
   // Get the current track
-  const currentTrack = queue.current;
+  const currentTrack = queue.currentTrack;
  
   // Get the upcoming tracks
-  const upcomingTracks = queue.tracks.slice(0, 5);
+  const upcomingTracks = queue.tracks.data.slice(0, 5);
  
-  // Create a message with the current track and upcoming tracks
   const message = [
-    `**Tocando agora:** ${currentTrack.title}`,
-    '',
-    '**Próximas Músicas:**',
-    ...upcomingTracks.map(
-      (track, index) => `${index + 1}. ${track.title}`,
-    ),
-  ].join('\n');
+  `**Tocando agora:** ${currentTrack?.title ?? 'Nenhuma música tocando'}`,
+  '',
+  '**Próximas Músicas:**',
+  ...upcomingTracks
+    .filter(Boolean)
+    .map((track, index) => `${index + 1}. ${track.title ?? 'Título desconhecido'}`),
+].join('\n');
  
   // Send the message
   return interaction.reply(message);
