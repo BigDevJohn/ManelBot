@@ -1,7 +1,7 @@
 // Import necessary classes from discord.js
 import { SlashCommandBuilder, PermissionsBitField } from 'discord.js';
 import { useMainPlayer } from 'discord-player';
-import { notInVoiceChannel, alreadyInVoiceChannel, noPermission, noChannelPermission } from '../bot-responses/errors.js';
+import { notInVoiceChannel, alreadyInVoiceChannel, noPermission, noChannelPermission, errorPlayingSong } from '../bot-responses/errors.js';
 
 // Define the play command
 export const command = new SlashCommandBuilder()
