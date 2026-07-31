@@ -27,11 +27,17 @@ client.once('clientReady', async () => {
 const player = new Player(client);
 
 await player.extractors.loadMulti(DefaultExtractors);
+
+
 player.events.on("error", (queue, error) => {
     console.log(`[${queue.guild.name}] Error emitted from the queue: ${error.message}`);
 });
 player.events.on("connectionError", (queue, error) => {
     console.log(`[${queue.guild.name}] Error emitted from the connection: ${error.message}`);
+});
+player.events.on("playerError", (queue, error) => {
+    console.log(`[${queue.guild.name}] Player error: ${error.message}`);
+    console.log(error.stack);
 });
 
 player.events.on("playerStart", (queue, track) => {
@@ -68,9 +74,9 @@ client.on("messageCreate", async (message) => {
             await message.guild.commands.set(commandsData);
 
             await message.reply("Test Deployed!");
-        }else if (message.content === "!deploy") {
+        } else if (message.content === "!deploy") {
             const commandsData = commands.map((mod) => mod.command.toJSON());
-            
+
             await client.application.commands.set(commandsData);
 
             await message.reply("Commands Deployed!");
