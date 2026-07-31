@@ -1,10 +1,12 @@
 import { Client, GatewayIntentBits, ApplicationCommandOptionType } from "discord.js";
 import { Player } from "discord-player";
 import pkg from "@discord-player/extractor";
-const { DefaultExtractors } = pkg;
+import { YoutubeiExtractor } from "discord-player-youtubei";
 import { handleInteraction } from "./command-handler.js";
 import { commands } from './commands/main.js';
 import 'dotenv/config';
+const { DefaultExtractors } = pkg;
+
 
 const token = process.env.DISCORD_TOKEN;
 
@@ -26,6 +28,7 @@ client.once('clientReady', async () => {
 
 const player = new Player(client);
 
+await player.extractors.register(YoutubeiExtractor, {});
 await player.extractors.loadMulti(DefaultExtractors);
 
 

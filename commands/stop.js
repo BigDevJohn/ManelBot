@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from 'discord.js';
 import { useQueue } from 'discord-player';
-import { noCurrentTrack } from '../bot-responses/errors.js';
+import { noCurrentTrack, needToBeInSameVoiceChannel, stoppingTrackError } from '../bot-responses/errors.js';
+import { stopResponse } from '../bot-responses/actions.js';
 
 export const command = new SlashCommandBuilder()
     .setName('stop')
