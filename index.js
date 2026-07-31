@@ -28,7 +28,10 @@ client.once('clientReady', async () => {
 
 const player = new Player(client);
 
-await player.extractors.register(YoutubeiExtractor, {});
+const oauthTokens = getOauthTokens() // The tokens printed from step above
+
+
+await player.extractors.register(YoutubeiExtractor,{});
 await player.extractors.loadMulti(DefaultExtractors);
 
 
