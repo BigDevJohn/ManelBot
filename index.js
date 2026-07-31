@@ -43,6 +43,14 @@ player.events.on("playerError", (queue, error) => {
     console.log(error.stack);
 });
 
+player.on("debug", (message) => {
+    console.log(`[Player debug] ${message}`);
+});
+
+player.events.on("debug", (queue, message) => {
+    console.log(`[Queue debug] ${message}`);
+});
+
 player.events.on("playerStart", (queue, track) => {
     queue.metadata.send(`Bicho, agora vai tocar: **${track.title}**!`);
 });
