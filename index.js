@@ -28,8 +28,11 @@ client.once('clientReady', async () => {
 
 const player = new Player(client);
 
-await player.extractors.register(YoutubeiExtractor,{});
-await player.extractors.loadMulti(DefaultExtractors);
+await player.extractors.register(YoutubeiExtractor, {
+    streamOptions: {
+        useClient: "ANDROID"
+    }
+});await player.extractors.loadMulti(DefaultExtractors);
 
 
 player.events.on("error", (queue, error) => {

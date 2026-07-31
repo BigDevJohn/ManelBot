@@ -24,6 +24,6 @@
     "youtubei.js": "^17.2.0"
   },
   "overrides": {
-  "youtubei.js": "^17.2.0"
-}
+    "youtubei.js": "^17.2.0"
+  }
 }
