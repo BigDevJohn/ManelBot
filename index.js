@@ -29,17 +29,22 @@ client.once('clientReady', async () => {
 const player = new Player(client);
 
 await player.extractors.register(YoutubeiExtractor, {
-    // Cookie do YouTube melhora muito a estabilidade em servidores cloud
-    // Configure a variável YOUTUBE_COOKIE no painel do Railway
+    // Cookie do YouTube é essencial para funcionar em IPs de datacenter
+    // Configure YOUTUBE_COOKIE no painel de variáveis do Railway
     cookie: process.env.YOUTUBE_COOKIE,
-    // PoToken + cliente WEB é mais confiável em IPs de datacenter
-    generateWithPoToken: true,
+    // TV_EMBEDDED é o cliente mais confiável em cloud — não requer PoToken
+    // e tem menos restrições de IP que ANDROID ou WEB
     streamOptions: {
-        useClient: "WEB",
-        // Buffer maior para compensar latência de rede em cloud
+        useClient: "TV_EMBEDDED",
         highWaterMark: 1 << 25
     }
-});await player.extractors.loadMulti(DefaultExtractors);
+});
+
+await player.extractors.loadMulti(DefaultExtractors);
+
+// Diagnóstico: mostra quais extractors foram registrados e se ffmpeg está disponível
+// Útil para debugar problemas de streaming nos logs do Railway
+console.log(player.scanDeps());
 
 
 player.events.on("error", (queue, error) => {
