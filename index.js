@@ -29,8 +29,15 @@ client.once('clientReady', async () => {
 const player = new Player(client);
 
 await player.extractors.register(YoutubeiExtractor, {
+    // Cookie do YouTube melhora muito a estabilidade em servidores cloud
+    // Configure a variável YOUTUBE_COOKIE no painel do Railway
+    cookie: process.env.YOUTUBE_COOKIE,
+    // PoToken + cliente WEB é mais confiável em IPs de datacenter
+    generateWithPoToken: true,
     streamOptions: {
-        useClient: "ANDROID"
+        useClient: "WEB",
+        // Buffer maior para compensar latência de rede em cloud
+        highWaterMark: 1 << 25
     }
 });await player.extractors.loadMulti(DefaultExtractors);
 

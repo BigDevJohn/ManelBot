@@ -25,5 +25,8 @@
   },
   "overrides": {
     "youtubei.js": "^17.2.0"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }
